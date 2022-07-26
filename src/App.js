@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import useImageData from './hooks/useImageData';
@@ -30,7 +30,7 @@ function App() {
     if(tags){
       filterImages(selectedOrientation, selectedTags);
     }
-  }, [selectedOrientation, selectedTags, tags])
+  }, [filterImages, selectedOrientation, selectedTags, tags])
 
 
   return (
@@ -43,28 +43,30 @@ function App() {
           <>
             {tags.map((tag, i)=>{
               return(
-                <>
+                <React.Fragment key={tag}>
                 <input key={tag} type="checkbox" name="tags_filter" value={tag} onChange={(e)=>handleTagSelection(tag, e)}/>{tag}&nbsp;
-                </>
+                </React.Fragment>
               )
             })}
           </>
         }
         </fieldset>
       </form>
+      <div style={{'marginTop':'25px', 'marginBottom':'25px'}}>Images: {filteredImageData.length}</div>
       <div style={{
         'display':'flex',
         'width': '100%',
-        'flex-wrap': 'wrap',
+        'flexWrap': 'wrap',
 
       }}>
         {imageData.length < 0 ?
           <span>Loading</span>
         :
           <>
-            {imageData.map((image)=>{
+            
+            {filteredImageData.map((image)=>{
               return (
-                <Image image={image} />
+                <Image image={image} key={image.filename} />
               )
             })};
           </>   

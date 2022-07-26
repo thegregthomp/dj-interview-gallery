@@ -1,14 +1,14 @@
-import {useState, useEffect } from 'react';
+import {useState, useEffect, useCallback } from 'react';
 const useImageData = () => {
   const [imageData, setImageData] = useState([]);
   const [filteredImageData, setFilteredImageData] = useState([]);
   const [tags, setTags] = useState([]);
 
-  const filterTags = () => {
+  const filterTags = useCallback(() => {
     const combinedTags = imageData.map((image)=>image.tags).flat();
     const filteredTags = combinedTags.filter((item, index)=>combinedTags.indexOf(item) === index);
     setTags(filteredTags);
-  } 
+  }, [imageData]); 
 
   // https://hanilim.github.io/interview/gallery-98j9ewmt7i/sizes.json
   // https://hanilim.github.io/interview/gallery-98j9ewmt7i/metadata.json
@@ -32,6 +32,7 @@ const useImageData = () => {
       )
     })
     setImageData(formattedImageData);
+    setFilteredImageData(formattedImageData);
     
   }
 
@@ -40,7 +41,7 @@ const useImageData = () => {
     const filtered = imageData.filter((image)=>{
       return tags.every((val) => image.tags.includes(val));
     })
-    console.log(filtered)
+    setFilteredImageData(filtered);
   }
 
   useEffect(()=>{
@@ -51,7 +52,7 @@ const useImageData = () => {
     if(imageData.length > 0){
       filterTags();
     }
-  },[imageData])
+  },[filterTags, imageData])
 
   return {imageData, tags, filteredImageData, filterImages}
 };
